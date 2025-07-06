@@ -1,6 +1,7 @@
 from prometheus_api_client import PrometheusConnect
 from datetime import datetime, timedelta
 import time
+import subprocess
 
 # Connect to local Prometheus server 
 prom = PrometheusConnect(url="http://localhost:9090", disable_ssl=True)
@@ -30,13 +31,13 @@ if __name__ == "__main__":
         spike, usage = get_cpu_usage()
         if spike:
             spike_duration += 10
-            print(f"PU Spike Detected: {usage:.2f}%, for {spike_duration} seconds")
+            print(f"CPU Spike Detected: {usage:.2f}%, for {spike_duration} seconds")
         else:
             spike_duration = 0
 
         if spike_duration >= DURATION:
             print("Sustained spike! Triggering analysis agent...")
-            # Next step: Call analysis tool here
+            subprocess.run(["python3", "agent.py"])
             break
 
         time.sleep(10)
